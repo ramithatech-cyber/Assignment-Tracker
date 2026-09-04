@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Clean white ground; the dark red is the accent, not the field. */
+  body {
+    @apply bg-white text-stone-700 antialiased;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-900;
+  }
+
+  ::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-stone-300 hover:bg-brand-300;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+}
+
+@layer components {
+  /* ---------------------------------------------------------------- surfaces */
+  .card {
+    @apply rounded-2xl border border-stone-200 bg-white shadow-soft;
+  }
+  .card-hover {
+    @apply transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lift;
+  }
+
+  .card-accent {
+    @apply relative overflow-hidden;
+  }
+  .card-accent::before {
+    content: '';
+    @apply absolute inset-x-0 top-0 h-1 bg-brand-gradient;
+  }
+
+  /* ----------------------------------------------------------------- buttons */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5
+           text-sm font-semibold transition duration-200
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600
+           focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
+           disabled:hover:translate-y-0 disabled:hover:shadow-none;
+  }
+  .btn-primary {
+    @apply btn bg-brand-gradient text-white shadow-lift
+           hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply btn border border-stone-200 bg-white text-stone-700
+           hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700;
+  }
+  .btn-soft {
+    @apply btn bg-brand-50 text-brand-700 hover:bg-brand-100;
+  }
+  .btn-danger {
+    @apply btn bg-brand-700 text-white hover:bg-brand-800;
+  }
+
+  /* ------------------------------------------------------------------ inputs */
+  .input {
+    @apply w-full rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-sm
+           text-stone-800 shadow-sm outline-none transition placeholder:text-stone-400
+           focus:border-brand-600 focus:ring-4 focus:ring-brand-600/10;
+  }
+  .input-error {
+    @apply border-brand-500 focus:border-brand-600 focus:ring-brand-600/10;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-stone-700;
+  }
+
+  /* ------------------------------------------------------------------- chips */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5
+           text-xs font-semibold;
+  }
+
+  .gradient-text {
+    @apply bg-brand-gradient bg-clip-text text-transparent;
+  }
+
+  /* --------------------------------------------------------------- sidebar */
+  .side-link {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold
+           text-stone-600 transition hover:bg-brand-50 hover:text-brand-700;
+  }
+  .side-link-active {
+    @apply bg-brand-gradient text-white shadow-lift hover:bg-brand-gradient hover:text-white;
+  }
+
+  .skeleton {
+    @apply rounded-lg bg-stone-200/70;
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.75) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 500px 100%;
+    background-repeat: no-repeat;
+    @apply animate-shimmer;
+  }
+}

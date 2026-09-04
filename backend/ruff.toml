@@ -1,0 +1,28 @@
+# Linting for this project's own code.
+#
+# Note: submitted student repositories are linted separately, with `--isolated`
+# and a fixed rule selection (see app/services/linters.py) so that this file has
+# no influence on anybody's grade.
+
+line-length = 100
+target-version = "py310"
+
+[lint]
+select = ["E", "W", "F", "I", "B", "C4", "SIM", "RET", "PIE"]
+ignore = [
+    "E501",  # long lines are handled by the formatter, not by failing the build
+]
+
+[lint.flake8-bugbear]
+# `Depends()` / `Query()` in a signature default is the FastAPI idiom, not the
+# mutable-default bug B008 is looking for.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Body",
+    "fastapi.Path",
+    "fastapi.Header",
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["E402"]  # conftest sets environment variables before importing app
