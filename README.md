@@ -213,4 +213,5 @@ deployed publicly**.
 The groundwork is already in place: `Submission.status` and `error_message` exist, and
 `run_analysis()` takes plain values and returns a plain result with no request state in it.
 Switching to `BackgroundTasks` plus polling on `GET /api/submissions/{id}` is a change to
-`routers/submissions.py` alone — no schema migration, no pipeline changes.
+`routers/submissions.py` alone — no schema migration, no pipeline changes  .
+
