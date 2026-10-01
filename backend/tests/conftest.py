@@ -18,6 +18,9 @@ _db_file.unlink(missing_ok=True)
 os.environ["DATABASE_URL"] = f"sqlite:///{_db_file.as_posix()}"
 os.environ["JWT_SECRET"] = "test-secret-not-used-anywhere-real"
 os.environ["OPENAI_API_KEY"] = ""
+os.environ["ADMIN_SIGNUP_CODE"] = "test-admin-code"
+
+ADMIN_SIGNUP_CODE = "test-admin-code"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -58,6 +61,7 @@ def teacher(client):
             "password": "correct-horse-battery",
             "full_name": "Ada Teacher",
             "role": "teacher",
+            "signup_code": ADMIN_SIGNUP_CODE,
         },
     )
     assert response.status_code == 201, response.text

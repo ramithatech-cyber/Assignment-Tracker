@@ -99,6 +99,7 @@ export const api = {
     password: string
     full_name: string
     role: string
+    signup_code?: string
   }) => request<Token>('/auth/register', { method: 'POST', body: payload }),
 
   login: (email: string, password: string) =>

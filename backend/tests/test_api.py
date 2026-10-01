@@ -69,6 +69,47 @@ def test_register_login_and_me(client, student):
     assert bad.status_code == 401
 
 
+ADMIN_PAYLOAD = {"email": "new.admin@example.com", "password": "correct-horse-battery",
+                 "full_name": "New Admin", "role": "teacher"}
+
+
+@pytest.mark.parametrize("code", [None, "", "wrong-code"])
+def test_admin_registration_requires_the_signup_code(client, code):
+    payload = dict(ADMIN_PAYLOAD, signup_code=code) if code is not None else ADMIN_PAYLOAD
+    response = client.post("/api/auth/register", json=payload)
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Invalid admin signup code."
+
+    # No account is created, so the email is still free.
+    login = client.post("/api/auth/login", json={"email": ADMIN_PAYLOAD["email"],
+                                                 "password": ADMIN_PAYLOAD["password"]})
+    assert login.status_code == 401
+
+
+def test_admin_registration_with_the_signup_code(client):
+    response = client.post("/api/auth/register",
+                           json=dict(ADMIN_PAYLOAD, signup_code="test-admin-code"))
+    assert response.status_code == 201
+    assert response.json()["user"]["role"] == "teacher"
+
+
+def test_admin_registration_is_disabled_without_a_configured_code(client, monkeypatch):
+    monkeypatch.setattr("app.routers.auth.settings.admin_signup_code", "")
+    response = client.post("/api/auth/register", json=dict(ADMIN_PAYLOAD, signup_code=""))
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Admin registration is disabled on this server."
+
+
+def test_student_registration_needs_no_signup_code(client):
+    response = client.post(
+        "/api/auth/register",
+        json={"email": "s2@example.com", "password": "correct-horse-battery",
+              "full_name": "Second Student", "role": "student"},
+    )
+    assert response.status_code == 201
+    assert response.json()["user"]["role"] == "student"
+
+
 def test_protected_routes_require_a_token(client):
     assert client.get("/api/assignments").status_code == 401
     assert client.get("/api/auth/me", headers=auth("garbage.token.here")).status_code == 401
@@ -198,7 +239,8 @@ def test_a_teacher_cannot_read_another_teachers_assignment(client, teacher, stud
     other = client.post(
         "/api/auth/register",
         json={"email": "other.teacher@example.com", "password": "correct-horse-battery",
-              "full_name": "Other Teacher", "role": "teacher"},
+              "full_name": "Other Teacher", "role": "teacher",
+              "signup_code": "test-admin-code"},
     ).json()
     assignment = client.post(
         "/api/assignments", json={"title": "Mine", "requirements": "x"},

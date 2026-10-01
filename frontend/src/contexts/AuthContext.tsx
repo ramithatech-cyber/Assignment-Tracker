@@ -20,6 +20,7 @@ interface AuthValue {
     password: string
     full_name: string
     role: Role
+    signup_code?: string
   }) => Promise<User>
   logout: () => void
 }
@@ -52,7 +53,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const register = useCallback(
-    async (payload: { email: string; password: string; full_name: string; role: Role }) => {
+    async (payload: {
+      email: string
+      password: string
+      full_name: string
+      role: Role
+      signup_code?: string
+    }) => {
       const token = await api.register(payload)
       tokenStore.set(token.access_token)
       setUser(token.user)

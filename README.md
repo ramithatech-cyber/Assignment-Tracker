@@ -16,7 +16,9 @@ Teachers create assignments, see every submission with its score, and follow eac
 - **Teacher dashboard:**
   - Class overview and per-student performance levels
   - Per-student review pages with an on-demand AI "overall remark", cached and flagged when out of date
-- **Role-based access:** a student can only see their own submissions; a teacher can only see submissions on their own assignments
+- **Role-based access:**
+  - A student can only see their own submissions; a teacher can only see submissions on their own assignments
+  - Admin accounts can only be created with the staff signup code (`ADMIN_SIGNUP_CODE`), checked on the server
 
 ## Tech stack
 
@@ -45,7 +47,7 @@ python -m venv .venv
 pip install -r requirements.txt
 
 copy .env.example .env              # macOS/Linux: cp .env.example .env
-# edit .env and set OPENAI_API_KEY and JWT_SECRET
+# edit .env and set OPENAI_API_KEY, JWT_SECRET and ADMIN_SIGNUP_CODE
 
 python -m uvicorn app.main:app --reload
 ```
@@ -71,6 +73,7 @@ Backend settings are read from `backend/.env` (see `backend/.env.example`):
 |----------|----------|---------|-------|
 | `OPENAI_API_KEY` | **yes** | none | Submissions fail without it |
 | `JWT_SECRET` | **yes** in production | insecure dev value | `python -c "import secrets; print(secrets.token_urlsafe(48))"` |
+| `ADMIN_SIGNUP_CODE` | **yes** for admin accounts | empty (admin signup disabled) | Shared secret staff must enter to create an admin account. Share it only with staff |
 | `OPENAI_MODEL` | no | `gpt-4.1` | Any model that supports structured outputs |
 | `GITHUB_TOKEN` | no | none | Raises the GitHub API limit from 60/hr to 5000/hr; a no-scope classic token is enough |
 | `DATABASE_URL` | no | `sqlite:///./assignment_tracker.db` | Use `postgresql+psycopg://…` in production |

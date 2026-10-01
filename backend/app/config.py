@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     jwt_secret: str = "insecure-dev-secret-change-me"
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60 * 24
+    # Shared secret required to self-register an admin (teacher) account.
+    # Left empty, admin registration is disabled entirely.
+    admin_signup_code: str = ""
 
     # --- OpenAI -------------------------------------------------------------
     openai_api_key: str = ""

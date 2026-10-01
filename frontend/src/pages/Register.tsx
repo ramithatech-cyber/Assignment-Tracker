@@ -11,7 +11,7 @@ export function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
 
-  const [form, setForm] = useState({ full_name: '', email: '', password: '' })
+  const [form, setForm] = useState({ full_name: '', email: '', password: '', signup_code: '' })
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -29,10 +29,13 @@ export function Register() {
     setBusy(true)
     try {
       // The portal decides the role -- there is no role picker to get wrong.
+      const { signup_code, ...fields } = form
       const user = await register({
-        ...form,
+        ...fields,
         email: form.email.trim(),
         role: portal.role,
+        // Only admin accounts need the staff signup code.
+        ...(isAdminPortal ? { signup_code: signup_code.trim() } : {}),
       })
       navigate(user.role === 'teacher' ? '/admin' : '/', { replace: true })
     } catch (caught) {
@@ -98,6 +101,22 @@ export function Register() {
             At least 8 characters.
           </p>
         </div>
+
+        {isAdminPortal && (
+          <div>
+            <label className="label" htmlFor="reg-signup-code">Admin signup code</label>
+            <input
+              id="reg-signup-code"
+              type="password"
+              className="input"
+              placeholder="Provided by your institution"
+              value={form.signup_code}
+              onChange={(event) => setForm({ ...form, signup_code: event.target.value })}
+              required
+              autoComplete="off"
+            />
+          </div>
+        )}
 
         <div
           className={`flex items-start gap-2.5 rounded-xl border ${portal.border} ${portal.softBg} p-3`}
